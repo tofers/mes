@@ -2,13 +2,14 @@
 
 
   <div>
-    <table height="30" style="margin-top: 20px" class="vtl-table vtl-table-hover vtl-table-bordered vtl-table-responsive vtl-table-responsive-sm">
+    <table height="30" style="margin-top: 20px"
+           class="vtl-table vtl-table-hover vtl-table-bordered vtl-table-responsive vtl-table-responsive-sm">
       <tr class="vtl-tbody-tr">
-        <td class="vtl-tbody-td vtl-tbody-td0" ><input placeholder="ID" v-model="searchId"/></td>
-        <td class="vtl-tbody-td vtl-tbody-td1" ><input placeholder="Название" v-model="searchTerm"/></td>
-        <td class="vtl-tbody-td vtl-tbody-td2" ><input placeholder="Дата" v-model="searchDate"/></td>
-        <td class="vtl-tbody-td vtl-tbody-td3" >
-          <select  v-model="searchStatus">
+        <td class="vtl-tbody-td vtl-tbody-td0"><input placeholder="ID" v-model="searchId"/></td>
+        <td class="vtl-tbody-td vtl-tbody-td1"><input placeholder="Название" v-model="searchTerm"/></td>
+        <td class="vtl-tbody-td vtl-tbody-td2"><input placeholder="Дата" v-model="searchDate"/></td>
+        <td class="vtl-tbody-td vtl-tbody-td3">
+          <select v-model="searchStatus">
             <option value="">All</option>
             <option value="CONFIRMED">CONFIRMED</option>
             <option value="REJECTED">REJECTED</option>
@@ -79,6 +80,19 @@ export default defineComponent({
           width: "15%",
           sortable: true,
         },
+        {
+          label: "",
+          field: "quick",
+          width: "10%",
+          display: function (row) {
+            return (
+                '<a href="/orders/'+row.id +'" type="button" data-id="' +
+                row.id +
+                '" class="btn is-rows-el quick-btn">Просмотр'
+                + '</a>'
+            );
+          }
+        }
       ],
       rows: [],
       totalRecordCount: 0,
