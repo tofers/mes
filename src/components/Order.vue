@@ -3,31 +3,79 @@ import {ref} from 'vue'
 import axios from "axios";
 import {useRoute} from "vue-router";
 
-
-const props = defineProps(['orderData'])
-
-let orderData = props.orderData;
-// orderData.date = orderData['date_add'].split(" ")[0];
-// orderData.time = orderData['date_add'].split(" ")[1];
-
-console.log(orderData);
-
 const submitted = ref(false)
+const orderId = ref(false)
 axios.defaults.headers.common = {'Authorization': `Bearer d6a8c8dc229946c2596590a0f5aa7eca`}
+const submitHandler = async (credentials) => {
 
+  credentials['date_add'] = credentials['date'] + " " + credentials['time'];
+
+  let orderId;
+  let url = `https://dev.whatcrm.net/lk/tinkoffs/` + credentials['id'];
+  const res = await axios.put(url, credentials)
+  // do some login things now
+  console.log(res)
+  submitted.value = true
+  alert("Данные успешно сохранены")
+}
 
 </script>
+<script>
+import {useRoute} from "vue-router";
+import axios from "axios";
 
+export default {
+  data() {
+    return {
+      renderComponent: false,
+      orderData: {
+        date: String,
+        time: String,
+        id: String,
+        status: String,
+        subscription_id: String,
+      },
+      orderId: Number
+    }
+  },
+  mounted() {
+    const route = useRoute();
+    let url = `https://dev.whatcrm.net/lk/tinkoffs/` + route.params.id;
+    axios.get(url)
+        .then((response, headers) => {
+          let orderData = response.data;
+
+          orderData.date = response.data['date_add'].split(" ")[0];
+
+
+          let time = response.data['date_add'].split(" ")[1];
+          orderData.time = time.split(':')[0] + ":" + time.split(':')[1];
+          this.orderData = orderData;
+
+          console.log(this.orderData);
+          this.renderComponent = true;
+
+
+        });
+  }
+}
+</script>
 <template>
   <FormKit
       type="form"
+      v-if="renderComponent"
       id="registration-example"
       :form-class="submitted ? 'hide' : 'show'"
       submit-label="Register"
       @submit="submitHandler"
       :actions="false"
+      :value="orderData"
   >
     <h1 class="text-2xl font-bold mb-2">Просмотр заявки #{{ $route.params.id }}</h1>
+    <FormKit
+        type="hidden"
+        name="id"
+    />
     <FormKit
         type="text"
         name="subscription_id"
