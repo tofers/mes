@@ -1,21 +1,14 @@
-<template>
-
-  просмотр заявки {{ $route.params.id }}
-  <a href="/orders">вернуться назад</a>
-  <pre>
-    {{ orderData }}
-  </pre>
-</template>
-
-
 <script>
 import axios from "axios";
-import {useRoute} from 'vue-router'
+import {useRoute} from 'vue-router';
+import Order from "@/components/Order.vue";
+import IconLoading from "@/components/icons/IconLoading.vue";
 
 axios.defaults.headers.common = {'Authorization': `Bearer d6a8c8dc229946c2596590a0f5aa7eca`}
 // import VueTableLite from 'vue3-table-lite'
 
 export default {
+  components: {IconLoading, Order},
   data() {
     return {
       orderData: []
@@ -32,3 +25,14 @@ export default {
   }
 }
 </script>
+
+<template>
+  <div style="margin-top: 20px;">
+    <div v-if="!orderData">
+      <IconLoading/>
+    </div>
+
+    <Order v-bind:orderData="orderData" v-if="orderData" />
+
+  </div>
+</template>
